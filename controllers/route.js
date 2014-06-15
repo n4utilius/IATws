@@ -4,6 +4,8 @@ var Route = require('../models/route.js');
 var route = {};
 var private = {};
 
+//req.user['_id']
+
 private.route_validate = function(route, callback){
 	var params = ['name', 'path', 'start_time', 'num_places', 'create_by']; 
 	var error = false
@@ -51,6 +53,7 @@ private.query_validate = function(query, callback){
 
 route.insert = function(req, res){
 	var result = { 'success': false, 'msg': ''}
+	req.body.create_by = req.user['_id']
 	private.route_validate(req.body, function(data, error){
 		if (error){
 			result.msg = error.message;
@@ -103,7 +106,7 @@ route.search_by_user = function(req, res){
 		res.send(result);
 	}
 
-	Route.find({'create_by': user_id}, function(error, data){
+	Route.find({'create_by': user_id }, function(error, data){
 		if (error) {
 			result.msg = error.message;
 			res.send(result);

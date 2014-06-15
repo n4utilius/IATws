@@ -6,12 +6,12 @@ var user = {};
 user.signup = function(req, res){
 	var email = req.body.email 
 	var password = req.body.password 
-
+	
 	var result = { 'success': false, 'msg': ''}
 
 	if ( email == undefined || password == undefined  ){
 		result.msg = 'Debe enviarse un email y un password'
-		res.send(result);
+		return res.send(result);
 	}
 	
 	var my_user = new User(req.body);
@@ -19,7 +19,7 @@ user.signup = function(req, res){
 	my_user.save(function(error, data){
 		if(error){
 			result.msg = error.message;
-			res.send(result)
+			return res.send(result)
 		}else{
 			result.success = true;
 			result.msg = 'ok';

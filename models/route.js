@@ -9,8 +9,8 @@ var routeSchema = mongoose.Schema({
     start_time: Date,
     num_places: Number,
     applications: [ Schema.ObjectId ], // ***
-    passengers: [ String ], // [ Schema.ObjectId ]
-    create_by: String
+    passengers: [ Schema.ObjectId ], // [ Schema.ObjectId ]
+    create_by: Schema.ObjectId
 })
 
 module.exports = mongoose.model('Route', routeSchema);

@@ -25,6 +25,9 @@ app.use(express.bodyParser());
 //add passports services
 require('./config/passport.js')(passport, LocalStrategy)
 
+app.use(express.cookieParser());
+app.use(express.session({ secret: '--- OMMITTED ---' }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -52,18 +55,21 @@ app.all('*', function(req, res, next){
 var route = require('./controllers/route.js')
 var passenger = require('./controllers/passenger.js')
 var user = require('./controllers/user.js')
+var middlewares = require ("./middlewares/base.js")
+
+defaultMiddlewares = [middlewares.isAuthenticated]
 
 app.namespace(mbaasContextRoot, function() {
-	app.post('/route', route.insert )
-	app.get('/route', route.all )
+	app.post('/route', defaultMiddlewares, route.insert )
+	app.get('/route', defaultMiddlewares, route.all )
 
-	app.put('/route/application', passenger.apply)
+	app.put('/route/application', defaultMiddlewares, passenger.apply)
 
-	app.put('/route/passenger', passenger.add)
-	app.delete('/route/passenger', passenger.del)
+	app.put('/route/passenger', defaultMiddlewares, passenger.add)
+	app.delete('/route/passenger', defaultMiddlewares, passenger.del)
 
 
-	app.get('/user/routes/:user_id', route.search_by_user )
+	app.get('/user/routes/:user_id', defaultMiddlewares, route.search_by_user )
 	//app.get('/user/routes/search', route.search )
 
 	app.post('/signup', user.signup )
@@ -74,6 +80,7 @@ app.namespace(mbaasContextRoot, function() {
 	    if (!user) { 
 	    	return res.send({ 'success': false, 'msg': 'email o password incorrecto'}); 
 	    }
+	    //console.log(user)
 	    req.login(user, function(err) {
 	      if (err) {  return res.send({ 'success': false, 'msg': err.message })}
 	      return res.send({ 'success': true, 'msg': 'ok'}); 

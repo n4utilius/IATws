@@ -9,7 +9,8 @@ var profileSchema = mongoose.Schema({
     cargo: String, // ***
     tel: String,
     bio: String,
-    img: String
+    img: String,
+    user: Schema.ObjectId
 })
 
 module.exports = mongoose.model('Profile', profileSchema);
